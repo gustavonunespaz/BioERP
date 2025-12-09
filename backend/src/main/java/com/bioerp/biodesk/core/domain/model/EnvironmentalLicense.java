@@ -11,6 +11,7 @@ public class EnvironmentalLicense {
 
     private final UUID id;
     private final UUID clientId;
+    private final UUID unitId;
     private final String name;
     private final String issuingAuthority;
     private final LocalDate issueDate;
@@ -23,6 +24,7 @@ public class EnvironmentalLicense {
     private EnvironmentalLicense(Builder builder) {
         this.id = Objects.requireNonNull(builder.id, "id is required");
         this.clientId = Objects.requireNonNull(builder.clientId, "clientId is required");
+        this.unitId = Objects.requireNonNull(builder.unitId, "unitId is required");
         this.name = requireNonBlank(builder.name, "name is required");
         this.issuingAuthority = requireNonBlank(builder.issuingAuthority, "issuingAuthority is required");
         this.issueDate = Objects.requireNonNull(builder.issueDate, "issueDate is required");
@@ -51,6 +53,7 @@ public class EnvironmentalLicense {
         return EnvironmentalLicense.builder()
                 .id(this.id)
                 .clientId(this.clientId)
+                .unitId(this.unitId)
                 .name(this.name)
                 .issuingAuthority(this.issuingAuthority)
                 .issueDate(this.issueDate)
@@ -68,6 +71,10 @@ public class EnvironmentalLicense {
 
     public UUID getClientId() {
         return clientId;
+    }
+
+    public UUID getUnitId() {
+        return unitId;
     }
 
     public String getName() {
@@ -112,6 +119,7 @@ public class EnvironmentalLicense {
     public static final class Builder {
         private UUID id;
         private UUID clientId;
+        private UUID unitId;
         private String name;
         private String issuingAuthority;
         private LocalDate issueDate;
@@ -126,6 +134,11 @@ public class EnvironmentalLicense {
 
         public Builder id(UUID id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder unitId(UUID unitId) {
+            this.unitId = unitId;
             return this;
         }
 

@@ -1,0 +1,17 @@
+# Maven
+backend/target/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/tsconfig*.tsbuildinfo
+frontend/vite.config.d.ts
+frontend/vite.config.js
+
+# Logs
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml

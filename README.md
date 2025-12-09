@@ -19,7 +19,7 @@ Plataforma web para consultorias ambientais construída com arquitetura limpa, P
 cd backend
 mvn spring-boot:run
 ```
-A aplicação expõe o endpoint de saúde em `GET /api/health`.
+A aplicação inicia pela classe principal `com.bioerp.BioErpApplication` e expõe o endpoint de saúde em `GET /api/health`.
 
 ### Frontend
 ```bash

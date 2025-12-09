@@ -20,6 +20,8 @@ cd backend
 mvn spring-boot:run
 ```
 A aplicação inicia pela classe principal `com.bioerp.BioErpApplication` e expõe o endpoint de saúde em `GET /api/health`.
+A profile padrão `local` usa um banco em memória H2 (modo PostgreSQL), dispensando um Postgres ativo. Para conectar a um
+PostgreSQL real, defina `SPRING_PROFILES_ACTIVE=prod` e informe `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`.
 
 ### Frontend
 ```bash

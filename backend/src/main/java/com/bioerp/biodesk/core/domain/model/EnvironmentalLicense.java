@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class EnvironmentalLicense {
 
@@ -50,18 +51,32 @@ public class EnvironmentalLicense {
     }
 
     public EnvironmentalLicense requestRenewal(LocalDate requestedAt) {
-        return EnvironmentalLicense.builder()
-                .id(this.id)
-                .clientId(this.clientId)
-                .unitId(this.unitId)
-                .name(this.name)
-                .issuingAuthority(this.issuingAuthority)
-                .issueDate(this.issueDate)
-                .expirationDate(this.expirationDate)
-                .renewalLeadTimeDays(this.renewalLeadTimeDays)
+        return copyBuilder()
                 .renewalRequested(true)
                 .renewalRequestedAt(requestedAt)
-                .conditions(this.conditions)
+                .build();
+    }
+
+    public EnvironmentalLicense addCondition(LicenseCondition condition) {
+        Set<LicenseCondition> updatedConditions = new HashSet<>(this.conditions);
+        updatedConditions.add(condition);
+        return copyBuilder()
+                .conditions(updatedConditions)
+                .build();
+    }
+
+    public EnvironmentalLicense updateConditionStatus(UUID conditionId, LicenseConditionStatus status) {
+        Objects.requireNonNull(conditionId, "conditionId is required");
+        Objects.requireNonNull(status, "status is required");
+        Set<LicenseCondition> updated = this.conditions.stream()
+                .map(condition -> condition.getId().equals(conditionId) ? condition.withStatus(status) : condition)
+                .collect(Collectors.toCollection(HashSet::new));
+        boolean conditionExists = updated.stream().anyMatch(condition -> condition.getId().equals(conditionId));
+        if (!conditionExists) {
+            throw new IllegalArgumentException("Condition not found for license");
+        }
+        return copyBuilder()
+                .conditions(updated)
                 .build();
     }
 
@@ -198,5 +213,20 @@ public class EnvironmentalLicense {
             }
             return new EnvironmentalLicense(this);
         }
+    }
+
+    private Builder copyBuilder() {
+        return builder()
+                .id(this.id)
+                .clientId(this.clientId)
+                .unitId(this.unitId)
+                .name(this.name)
+                .issuingAuthority(this.issuingAuthority)
+                .issueDate(this.issueDate)
+                .expirationDate(this.expirationDate)
+                .renewalLeadTimeDays(this.renewalLeadTimeDays)
+                .renewalRequested(this.renewalRequested)
+                .renewalRequestedAt(this.renewalRequestedAt)
+                .conditions(this.conditions);
     }
 }

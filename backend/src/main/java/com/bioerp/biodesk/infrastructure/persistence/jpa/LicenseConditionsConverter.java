@@ -1,6 +1,7 @@
 package com.bioerp.biodesk.infrastructure.persistence.jpa;
 
 import com.bioerp.biodesk.core.domain.model.LicenseCondition;
+import com.bioerp.biodesk.core.domain.model.LicenseConditionStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +12,7 @@ import java.time.Period;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Converter
 public class LicenseConditionsConverter implements AttributeConverter<Set<LicenseCondition>, String> {
@@ -25,9 +27,11 @@ public class LicenseConditionsConverter implements AttributeConverter<Set<Licens
         try {
             Set<ConditionData> payload = attribute.stream()
                     .map(condition -> new ConditionData(
+                            condition.getId(),
                             condition.getName(),
                             condition.getDocumentType(),
-                            condition.getPeriodicity().toString()))
+                            condition.getPeriodicity().toString(),
+                            condition.getStatus()))
                     .collect(Collectors.toSet());
             return objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
@@ -45,9 +49,11 @@ public class LicenseConditionsConverter implements AttributeConverter<Set<Licens
             });
             return payload.stream()
                     .map(condition -> LicenseCondition.builder()
+                            .id(condition.id())
                             .name(condition.name())
                             .documentType(condition.documentType())
                             .periodicity(Period.parse(condition.periodicity()))
+                            .status(condition.status())
                             .build())
                     .collect(Collectors.toSet());
         } catch (JsonProcessingException e) {
@@ -55,6 +61,12 @@ public class LicenseConditionsConverter implements AttributeConverter<Set<Licens
         }
     }
 
-    private record ConditionData(String name, String documentType, String periodicity) {
+    private record ConditionData(
+            UUID id,
+            String name,
+            String documentType,
+            String periodicity,
+            LicenseConditionStatus status
+    ) {
     }
 }

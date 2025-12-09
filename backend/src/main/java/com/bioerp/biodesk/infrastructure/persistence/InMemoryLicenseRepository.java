@@ -1,6 +1,7 @@
 package com.bioerp.biodesk.infrastructure.persistence;
 
 import com.bioerp.biodesk.core.domain.model.EnvironmentalLicense;
+import com.bioerp.biodesk.core.domain.model.LicenseCondition;
 import com.bioerp.biodesk.core.ports.LicenseRepository;
 import com.bioerp.biodesk.core.ports.query.LicenseSearchQuery;
 import java.util.List;
@@ -30,5 +31,14 @@ public class InMemoryLicenseRepository implements LicenseRepository {
                 .filter(license -> query.clientId() == null || query.clientId().equals(license.getClientId()))
                 .filter(license -> query.unitId() == null || query.unitId().equals(license.getUnitId()))
                 .toList();
+    }
+
+    @Override
+    public Optional<EnvironmentalLicense> findByConditionId(UUID conditionId) {
+        return storage.values().stream()
+                .filter(license -> license.getConditions().stream()
+                        .map(LicenseCondition::getId)
+                        .anyMatch(conditionId::equals))
+                .findFirst();
     }
 }

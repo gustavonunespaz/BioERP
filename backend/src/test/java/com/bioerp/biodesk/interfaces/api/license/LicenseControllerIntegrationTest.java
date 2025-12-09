@@ -2,11 +2,13 @@ package com.bioerp.biodesk.interfaces.api.license;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.bioerp.biodesk.interfaces.api.client.CreateClientRequest;
 import com.bioerp.biodesk.interfaces.api.client.CreateUnitRequest;
+import com.bioerp.biodesk.core.domain.model.LicenseConditionStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
@@ -17,12 +19,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class LicenseControllerIntegrationTest {
 
     @Autowired
@@ -102,5 +106,82 @@ class LicenseControllerIntegrationTest {
 
         JsonNode byIdNode = objectMapper.readTree(byIdResult.getResponse().getContentAsString());
         assertThat(byIdNode.get("status").asText()).isEqualTo("VIGENTE");
+    }
+
+    @Test
+    void shouldAddConditionAndUpdateStatus() throws Exception {
+        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest("Cond Corp", "27.865.757/0001-02"));
+        JsonNode clientNode = objectMapper.readTree(mockMvc.perform(post("/api/clients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(clientPayload))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString());
+
+        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest("Unidade Cond", "54.550.752/0001-55"));
+        JsonNode unitNode = objectMapper.readTree(mockMvc.perform(post("/api/clients/" + clientNode.get("id").asText() + "/units")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(unitPayload))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString());
+
+        CreateEnvironmentalLicenseRequest licenseRequest = new CreateEnvironmentalLicenseRequest(
+                "Licença Cond", "IBAMA", LocalDate.now(), LocalDate.now().plusYears(4), 90, false, null, Set.of()
+        );
+
+        JsonNode licenseNode = objectMapper.readTree(mockMvc.perform(post("/api/units/" + unitNode.get("id").asText() + "/licenses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(licenseRequest)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString());
+
+        AddLicenseConditionRequest conditionRequest = new AddLicenseConditionRequest("Relatório", "PDF", 6);
+
+        JsonNode licenseWithCondition = objectMapper.readTree(mockMvc.perform(post("/api/licenses/" + licenseNode.get("id").asText() + "/conditions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(conditionRequest)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString());
+
+        assertThat(licenseWithCondition.get("conditions").isArray()).isTrue();
+        assertThat(licenseWithCondition.get("conditions")).hasSize(1);
+        JsonNode conditionNode = licenseWithCondition.get("conditions").get(0);
+        assertThat(conditionNode.get("status").asText()).isEqualTo("PENDING");
+
+        JsonNode detailAfterCreation = objectMapper.readTree(mockMvc.perform(get("/api/licenses/" + licenseNode.get("id").asText()))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString());
+
+        assertThat(detailAfterCreation.get("conditions")).hasSize(1);
+
+        UpdateLicenseConditionStatusRequest updateStatusRequest = new UpdateLicenseConditionStatusRequest(LicenseConditionStatus.COMPLETED);
+
+        JsonNode updatedLicense = objectMapper.readTree(mockMvc.perform(patch("/api/conditions/" + conditionNode.get("id").asText())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateStatusRequest)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString());
+
+        JsonNode updatedCondition = updatedLicense.get("conditions").get(0);
+        assertThat(updatedCondition.get("status").asText()).isEqualTo("COMPLETED");
+
+        JsonNode detailAfterUpdate = objectMapper.readTree(mockMvc.perform(get("/api/licenses/" + licenseNode.get("id").asText()))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString());
+
+        assertThat(detailAfterUpdate.get("conditions").get(0).get("status").asText()).isEqualTo("COMPLETED");
     }
 }

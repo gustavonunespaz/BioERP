@@ -10,4 +10,5 @@ public interface LicenseRepository {
     EnvironmentalLicense save(EnvironmentalLicense license);
     Optional<EnvironmentalLicense> findById(UUID id);
     List<EnvironmentalLicense> findAll(LicenseSearchQuery query);
+    Optional<EnvironmentalLicense> findByConditionId(UUID conditionId);
 }

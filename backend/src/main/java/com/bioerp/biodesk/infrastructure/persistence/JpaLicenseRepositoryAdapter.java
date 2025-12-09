@@ -2,6 +2,7 @@ package com.bioerp.biodesk.infrastructure.persistence;
 
 import com.bioerp.biodesk.core.application.ResourceNotFoundException;
 import com.bioerp.biodesk.core.domain.model.EnvironmentalLicense;
+import com.bioerp.biodesk.core.domain.model.LicenseCondition;
 import com.bioerp.biodesk.core.ports.LicenseRepository;
 import com.bioerp.biodesk.core.ports.query.LicenseSearchQuery;
 import com.bioerp.biodesk.infrastructure.persistence.jpa.EnvironmentalLicenseJpaEntity;
@@ -51,5 +52,16 @@ public class JpaLicenseRepositoryAdapter implements LicenseRepository {
             entities = licenseJpaRepository.findAll();
         }
         return entities.stream().map(EnvironmentalLicenseJpaEntity::toDomain).toList();
+    }
+
+    @Override
+    public Optional<EnvironmentalLicense> findByConditionId(UUID conditionId) {
+        List<EnvironmentalLicenseJpaEntity> entities = licenseJpaRepository.findAll();
+        return entities.stream()
+                .map(EnvironmentalLicenseJpaEntity::toDomain)
+                .filter(license -> license.getConditions().stream()
+                        .map(LicenseCondition::getId)
+                        .anyMatch(conditionId::equals))
+                .findFirst();
     }
 }

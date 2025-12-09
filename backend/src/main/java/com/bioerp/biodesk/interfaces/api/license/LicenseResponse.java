@@ -4,7 +4,6 @@ import com.bioerp.biodesk.core.domain.model.EnvironmentalLicense;
 import com.bioerp.biodesk.core.domain.model.LicenseCondition;
 import com.bioerp.biodesk.core.domain.model.LicenseLifecycleStatus;
 import com.bioerp.biodesk.core.domain.service.LicenseStatusEvaluator;
-import java.time.Period;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
@@ -46,11 +45,17 @@ public record LicenseResponse(
         );
     }
 
-    public record LicenseConditionResponse(String name, String documentType, int periodicityInMonths) {
+    public record LicenseConditionResponse(UUID id, String name, String documentType, int periodicityInMonths,
+                                           String status) {
         public static LicenseConditionResponse from(LicenseCondition condition) {
-            Period periodicity = condition.getPeriodicity();
-            int months = periodicity.getYears() * 12 + periodicity.getMonths();
-            return new LicenseConditionResponse(condition.getName(), condition.getDocumentType(), months);
+            int months = (int) condition.getPeriodicity().toTotalMonths();
+            return new LicenseConditionResponse(
+                    condition.getId(),
+                    condition.getName(),
+                    condition.getDocumentType(),
+                    months,
+                    condition.getStatus().name()
+            );
         }
     }
 }

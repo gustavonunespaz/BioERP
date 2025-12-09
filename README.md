@@ -3,11 +3,11 @@
 Plataforma web para consultorias ambientais construída com arquitetura limpa, Postgres, Spring Boot e React.
 
 ## Estrutura do projeto
-- `backend/`: API REST em Java 21 com Spring Boot 3, preparada para PostgreSQL e princípios de ACID, SOLID e arquitetura em camadas.
+- `backend/`: API REST em Java 17 com Spring Boot 3, preparada para PostgreSQL e princípios de ACID, SOLID e arquitetura em camadas.
 - `frontend/`: SPA React com Vite e TypeScript, pronta para consumir a API e funcionar em qualquer navegador moderno.
 
 ## Pré-requisitos
-- Java 21+
+- Java 17+
 - Maven 3.9+
 - Node.js 20+
 - npm 10+

@@ -15,7 +15,12 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public LicenseStatusEvaluator licenseStatusEvaluator() {
-        return new LicenseStatusEvaluator(Clock.systemDefaultZone());
+    public Clock clock() {
+        return Clock.systemDefaultZone();
+    }
+
+    @Bean
+    public LicenseStatusEvaluator licenseStatusEvaluator(Clock clock) {
+        return new LicenseStatusEvaluator(clock);
     }
 }

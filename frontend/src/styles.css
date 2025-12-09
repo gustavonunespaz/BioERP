@@ -1,0 +1,103 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #0b1727;
+  background-color: #f6f8fb;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.hero {
+  background: linear-gradient(135deg, #0b8a4f, #0e5fa3);
+  color: #f9fbff;
+  padding: 2.5rem;
+  border-radius: 24px;
+  box-shadow: 0 14px 28px rgba(14, 95, 163, 0.25);
+}
+
+.hero h1 {
+  margin: 0.5rem 0 1rem;
+  font-size: 2.3rem;
+}
+
+.lead {
+  max-width: 720px;
+  margin: 0 0 1.5rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.cta {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.cta a {
+  text-decoration: none;
+  font-weight: 700;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+}
+
+.cta .primary {
+  background: #f6f8fb;
+  color: #0b1727;
+}
+
+.cta .secondary {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: #f6f8fb;
+}
+
+main {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 24px rgba(11, 23, 39, 0.08);
+}
+
+.card h2,
+.card h3 {
+  margin-top: 0;
+}
+
+.card ul {
+  padding-left: 1.25rem;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}

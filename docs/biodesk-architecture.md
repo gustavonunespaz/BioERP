@@ -9,10 +9,6 @@ Este documento descreve a primeira entrega de arquitetura limpa aplicada ao back
 - **Ports (`core/ports`)**: `LicenseRepository` define contrato para persistência.
 - **Infraestrutura (`infrastructure`)**: `InMemoryLicenseRepository` oferece armazenamento em memória para prototipação rápida.
 
-## Bootstrapping e varredura de componentes
-- **Classe principal única**: `com.bioerp.BioErpApplication` é o ponto de entrada do Spring Boot. Ela vive na raiz do pacote `com.bioerp` para garantir que todos os componentes de `interfaces`, `biodesk` e futuros módulos sejam detectados automaticamente pelo escaneamento de componentes.
-- **Pacotes especializados**: módulos como BioDesk ficam em subpacotes (por exemplo, `com.bioerp.biodesk`) e mantêm separação de responsabilidades sem exigir múltiplos entrypoints.
-
 ## Regras de status implementadas
 - **Vigente**: fora da janela mínima de renovação.
 - **Renovação atrasada**: dentro da janela mínima sem solicitação registrada.

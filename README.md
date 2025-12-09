@@ -34,3 +34,10 @@ Abra o navegador em `http://localhost:5173` para acessar a interface.
 ## Testes
 - Backend: `mvn test`
 - Frontend: `npm run build`
+
+## Central de alertas (MVP)
+- Motor diário com scheduler às 06:00 executando o `GenerateAlertsUseCase`, responsável por criar alertas para licenças que vencem em 90, 60 ou 30 dias e para licenças vencidas, com deduplicação por `dedup_key`.
+- Notificação interna persiste os alertas e um conector de e-mail mockado registra envios em log.
+- Endpoints REST:
+  - `GET /api/alerts` — lista todos os alertas em ordem decrescente de criação.
+  - `PATCH /api/alerts/{id}/read` — marca um alerta como lido.

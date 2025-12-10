@@ -68,7 +68,11 @@ export default function UnitDetailPage() {
         <div className="flex items-center gap-3 text-sm text-slate-500">
           <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">CNPJ: {unit.cnpj ?? "não informado"}</span>
           <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Criado em {unit.createdAt ? new Date(unit.createdAt).toLocaleDateString() : "-"}</span>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{unit.city ?? "Cidade"}/{unit.state ?? "UF"}</span>
         </div>
+        <p className="text-xs text-slate-500">{unit.addressLine ?? "Endereço não informado"}</p>
+        <p className="text-xs text-slate-500">Atividade: {unit.activity ?? "não informada"}</p>
+        {unit.notes ? <p className="text-xs text-slate-500">Observações: {unit.notes}</p> : null}
       </div>
 
       <div className="flex gap-2">

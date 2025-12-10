@@ -51,14 +51,6 @@ export function Sidebar() {
           );
         })}
       </div>
-
-      <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-white p-4 shadow-soft">
-        <p className="text-xs font-medium uppercase tracking-widest text-emerald-600">Governança</p>
-        <p className="mt-1 text-sm text-slate-600">Camadas SOLID e consistência ACID documentadas.</p>
-        <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-emerald-700">
-          <span className="badge-dot" /> SLA 99,95%
-        </div>
-      </div>
     </aside>
   );
 }

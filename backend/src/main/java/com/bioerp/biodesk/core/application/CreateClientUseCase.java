@@ -26,11 +26,27 @@ public class CreateClientUseCase {
         Client client = Client.builder()
                 .id(command.id())
                 .name(command.name())
+                .tradeName(command.tradeName())
                 .cnpj(normalizedCnpj)
+                .segment(command.segment())
+                .status(command.status())
+                .mainContactName(command.mainContactName())
+                .mainContactEmail(command.mainContactEmail())
+                .mainContactPhone(command.mainContactPhone())
+                .notes(command.notes())
                 .build();
         return clientRepository.save(client);
     }
 
-    public record Command(UUID id, String name, String cnpj) {
+    public record Command(UUID id,
+                          String name,
+                          String tradeName,
+                          String cnpj,
+                          String segment,
+                          String status,
+                          String mainContactName,
+                          String mainContactEmail,
+                          String mainContactPhone,
+                          String notes) {
     }
 }

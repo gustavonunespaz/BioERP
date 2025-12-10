@@ -28,12 +28,7 @@ class CreateUnitUseCaseTest {
         Client client = Client.builder().name("Bio Corp").cnpj("04252011000110").build();
         clientRepository.save(client);
 
-        CreateUnitUseCase.Command command = new CreateUnitUseCase.Command(
-                UUID.fromString("00000000-0000-0000-0000-000000000222"),
-                client.getId(),
-                "Filial Norte",
-                "27865757000102"
-        );
+        CreateUnitUseCase.Command command = defaultCommand(client.getId(), "Filial Norte", "27865757000102");
 
         Unit unit = useCase.handle(command);
 
@@ -46,17 +41,31 @@ class CreateUnitUseCaseTest {
         Client client = Client.builder().name("Bio Corp").cnpj("11222333000181").build();
         clientRepository.save(client);
 
-        useCase.handle(new CreateUnitUseCase.Command(null, client.getId(), "Filial Norte", "19131243000197"));
+        useCase.handle(defaultCommand(client.getId(), "Filial Norte", "19131243000197"));
 
         assertThrows(ResourceConflictException.class, () ->
-                useCase.handle(new CreateUnitUseCase.Command(null, client.getId(), "Filial Sul", "19131243000197"))
+                useCase.handle(defaultCommand(client.getId(), "Filial Sul", "19131243000197"))
         );
     }
 
     @Test
     void shouldValidateClientExistence() {
         assertThrows(ResourceNotFoundException.class, () ->
-                useCase.handle(new CreateUnitUseCase.Command(null, UUID.randomUUID(), "Filial", "27865757000102"))
+                useCase.handle(defaultCommand(UUID.randomUUID(), "Filial", "27865757000102"))
+        );
+    }
+
+    private CreateUnitUseCase.Command defaultCommand(UUID clientId, String name, String cnpj) {
+        return new CreateUnitUseCase.Command(
+                UUID.fromString("00000000-0000-0000-0000-000000000222"),
+                clientId,
+                name,
+                cnpj,
+                "Av. Central, 100",
+                "São Paulo",
+                "SP",
+                "Tratamento de resíduos",
+                "Unidade criada em teste"
         );
     }
 }

@@ -2,22 +2,24 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertCircle, Clock, FileText, Leaf, Loader2, MapPin } from "lucide-react";
+import { AlertCircle, Clock, Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 
 import { Card } from "@/components/ui/card";
-import { fetchUnitById } from "@/lib/services/api-client";
+import { fetchLicenses, fetchUnitById } from "@/lib/services/api-client";
 import { License, UnitDetail } from "@/lib/types";
 
-const statusTone: Record<License["status"], string> = {
-  vigente: "text-emerald-700 bg-emerald-50",
-  critica: "text-amber-700 bg-amber-50",
-  arquivada: "text-slate-500 bg-slate-100"
+const statusTone: Record<string, string> = {
+  VIGENTE: "text-emerald-700 bg-emerald-50",
+  EM_RENOVACAO: "text-sky-700 bg-sky-50",
+  RENOVACAO_ATRASADA: "text-amber-700 bg-amber-50",
+  VENCIDA: "text-red-700 bg-red-50"
 };
 
 export default function UnitDetailPage() {
   const params = useParams<{ id: string }>();
   const [unit, setUnit] = useState<UnitDetail | null>(null);
+  const [licenses, setLicenses] = useState<License[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<"licencas" | "residuos">("licencas");
@@ -26,7 +28,9 @@ export default function UnitDetailPage() {
     const load = async () => {
       try {
         const data = await fetchUnitById(params.id);
+        const licensesForUnit = await fetchLicenses({ unitId: params.id });
         setUnit(data);
+        setLicenses(licensesForUnit);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -62,10 +66,8 @@ export default function UnitDetailPage() {
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold text-slate-900">{unit.name}</h1>
         <div className="flex items-center gap-3 text-sm text-slate-500">
-          <MapPin className="h-4 w-4" /> {unit.city}/{unit.state}
-          <span className="flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-            <Leaf className="h-4 w-4" /> Gestor: {unit.manager}
-          </span>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">CNPJ: {unit.cnpj ?? "não informado"}</span>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Criado em {unit.createdAt ? new Date(unit.createdAt).toLocaleDateString() : "-"}</span>
         </div>
       </div>
 
@@ -76,7 +78,7 @@ export default function UnitDetailPage() {
           }`}
           onClick={() => setTab("licencas")}
         >
-          Licenças ({unit.licenses.length})
+          Licenças ({licenses.length})
         </button>
         <button
           className={`rounded-full px-4 py-2 text-xs font-semibold ${
@@ -91,7 +93,7 @@ export default function UnitDetailPage() {
       {tab === "licencas" ? (
         <Card className="p-4 lg:p-6">
           <div className="grid gap-3 md:grid-cols-2">
-            {unit.licenses.map((license) => (
+            {licenses.map((license) => (
               <Link
                 key={license.id}
                 href={`/licencas/${license.id}`}
@@ -99,18 +101,15 @@ export default function UnitDetailPage() {
               >
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <p className="text-sm font-semibold text-slate-900">{license.title}</p>
-                    <p className="text-xs text-slate-500">{license.code}</p>
+                    <p className="text-sm font-semibold text-slate-900">{license.name ?? license.title ?? "Licença"}</p>
+                    <p className="text-xs text-slate-500">Autoridade: {license.issuingAuthority ?? license.authority ?? "-"}</p>
                   </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusTone[license.status]}`}>
-                    {license.status.toUpperCase()}
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusTone[license.status ?? ""] ?? "bg-slate-100 text-slate-700"}`}>
+                    {(license.status ?? "Sem status").toString()}
                   </span>
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                  <Clock className="h-4 w-4" /> Vencimento {license.expiresAt}
-                </div>
-                <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                  <FileText className="h-4 w-4" /> {license.documents.length} documentos
+                  <Clock className="h-4 w-4" /> Vencimento {license.expirationDate ?? license.expiresAt ?? "-"}
                 </div>
               </Link>
             ))}

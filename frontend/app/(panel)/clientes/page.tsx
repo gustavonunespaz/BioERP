@@ -2,24 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { AlertCircle, Loader2, MapPin, Plus, Users } from "lucide-react";
+import { AlertCircle, FileText, Loader2, Plus, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { createClientRequest, fetchClients } from "@/lib/services/api-client";
 import { Client } from "@/lib/types";
 
-const statusStyles: Record<Client["status"], string> = {
-  ativo: "bg-emerald-50 text-emerald-700",
-  risco: "bg-amber-50 text-amber-700",
-  inativo: "bg-slate-100 text-slate-500"
-};
-
 export default function ClientesPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", segment: "", city: "", state: "" });
+  const [form, setForm] = useState({ name: "", cnpj: "" });
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -38,9 +32,10 @@ export default function ClientesPage() {
     load();
   }, []);
 
-  const totalLicenses = useMemo(() =>
-    clients.reduce((acc, client) => acc + client.units.reduce((sum, unit) => sum + unit.licenseCount, 0), 0),
-  [clients]);
+  const totalLicenses = useMemo(
+    () => clients.reduce((acc, client) => acc + (client.units?.reduce((sum, unit) => sum + (unit.licenseCount ?? 0), 0) ?? 0), 0),
+    [clients]
+  );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,7 +45,7 @@ export default function ClientesPage() {
     try {
       const created = await createClientRequest(form);
       setClients((prev) => [created, ...prev]);
-      setForm({ name: "", segment: "", city: "", state: "" });
+      setForm({ name: "", cnpj: "" });
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -95,18 +90,13 @@ export default function ClientesPage() {
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <p className="text-sm font-semibold text-slate-900">{client.name}</p>
-                    <p className="text-xs text-slate-500">{client.segment}</p>
+                    <p className="text-xs text-slate-500">CNPJ: {client.cnpj ?? "não informado"}</p>
                   </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[client.status]}`}>
-                    {client.status.toUpperCase()}
-                  </span>
-                </div>
-                <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                  <MapPin className="h-4 w-4" /> {client.city}/{client.state}
+                  <span className="rounded-full px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700">Ativo</span>
                 </div>
                 <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                  <span>{client.units.length} unidades</span>
-                  <span>Atualizado {client.updatedAt}</span>
+                  <span>{client.units?.length ?? 0} unidades</span>
+                  <span>{client.createdAt ? `Criado em ${new Date(client.createdAt).toLocaleDateString()}` : "Data não informada"}</span>
                 </div>
               </Link>
             ))}
@@ -136,44 +126,18 @@ export default function ClientesPage() {
               />
             </div>
             <div className="grid gap-1">
-              <label className="text-xs font-semibold text-slate-700" htmlFor="segment">
-                Segmento
+              <label className="text-xs font-semibold text-slate-700" htmlFor="cnpj">
+                CNPJ
               </label>
-              <input
-                id="segment"
-                value={form.segment}
-                onChange={(e) => setForm((prev) => ({ ...prev, segment: e.target.value }))}
-                required
-                placeholder="Ex: Logística sustentável"
-                className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="grid gap-1">
-                <label className="text-xs font-semibold text-slate-700" htmlFor="city">
-                  Cidade
-                </label>
+              <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus-within:border-emerald-300 focus-within:ring-2 focus-within:ring-emerald-100">
+                <FileText className="h-4 w-4 text-slate-400" />
                 <input
-                  id="city"
-                  value={form.city}
-                  onChange={(e) => setForm((prev) => ({ ...prev, city: e.target.value }))}
+                  id="cnpj"
+                  value={form.cnpj}
+                  onChange={(e) => setForm((prev) => ({ ...prev, cnpj: e.target.value }))}
                   required
-                  placeholder="Ex: Curitiba"
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                />
-              </div>
-              <div className="grid gap-1">
-                <label className="text-xs font-semibold text-slate-700" htmlFor="state">
-                  UF
-                </label>
-                <input
-                  id="state"
-                  value={form.state}
-                  onChange={(e) => setForm((prev) => ({ ...prev, state: e.target.value }))}
-                  required
-                  maxLength={2}
-                  placeholder="PR"
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm uppercase focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                  placeholder="00.000.000/0000-00"
+                  className="w-full bg-transparent outline-none"
                 />
               </div>
             </div>

@@ -1,87 +1,83 @@
 export type Contact = {
-  name: string;
-  role: string;
-  email: string;
-  phone: string;
+  name?: string;
+  role?: string;
+  email?: string;
+  phone?: string;
 };
 
 export type UnitSummary = {
   id: string;
   name: string;
-  city: string;
-  state: string;
-  licenseCount: number;
+  city?: string;
+  state?: string;
+  licenseCount?: number;
 };
 
 export type Client = {
   id: string;
   name: string;
-  segment: string;
-  status: "ativo" | "risco" | "inativo";
-  city: string;
-  state: string;
-  contacts: Contact[];
-  notes: string;
-  updatedAt: string;
-  createdAt: string;
-  units: UnitSummary[];
+  cnpj?: string;
+  segment?: string;
+  status?: "ativo" | "risco" | "inativo";
+  city?: string;
+  state?: string;
+  contacts?: Contact[];
+  notes?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  units?: UnitSummary[];
 };
 
-export type LicenseDocument = {
+export type LicenseCondition = {
   id: string;
   name: string;
-  version: number;
-  uploadedAt: string;
-  uploadedBy: string;
-  size: string;
-};
-
-export type Condition = {
-  id: string;
-  title: string;
-  status: "concluida" | "pendente" | "alerta";
-  dueDate: string;
-};
-
-export type LicenseHistory = {
-  id: string;
-  description: string;
-  date: string;
-  author: string;
+  documentType?: string;
+  periodicityInMonths?: number;
+  status?: string;
 };
 
 export type License = {
   id: string;
-  code: string;
-  title: string;
-  status: "vigente" | "critica" | "arquivada";
-  category: string;
-  authority: string;
-  issuedAt: string;
-  expiresAt: string;
+  code?: string;
+  title?: string;
+  name?: string;
+  status?: string;
+  category?: string;
+  authority?: string;
+  issuingAuthority?: string;
+  issuedAt?: string;
+  issueDate?: string;
+  expiresAt?: string;
+  expirationDate?: string;
   unitId: string;
   clientId: string;
-  documents: LicenseDocument[];
-  conditions: Condition[];
-  history: LicenseHistory[];
+  documents?: [];
+  conditions: LicenseCondition[];
+  history?: [];
+  renewalLeadTimeDays?: number;
+  renewalRequested?: boolean;
+  renewalRequestedAt?: string | null;
 };
 
 export type UnitDetail = {
   id: string;
   name: string;
   clientId: string;
-  city: string;
-  state: string;
-  manager: string;
-  licenses: License[];
+  city?: string;
+  state?: string;
+  manager?: string;
+  cnpj?: string;
+  createdAt?: string;
+  licenses?: License[];
 };
 
 export type Alert = {
   id: string;
   title: string;
-  category: string;
+  category?: string;
   severity: "info" | "warning" | "critical";
-  timeAgo: string;
+  timeAgo?: string;
   description: string;
   read: boolean;
+  createdAt?: string;
 };

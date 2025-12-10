@@ -28,7 +28,7 @@ public class AlertJpaEntity {
     private UUID licenseId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "alert_type", nullable = false)
     private AlertType type;
 
     @Column(nullable = false)

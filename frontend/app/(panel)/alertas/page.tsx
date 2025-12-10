@@ -76,13 +76,15 @@ export default function AlertasPage() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${severityColor[alert.severity]}`}>
-                    {alert.category}
+                    {alert.category ?? "Alerta"}
                   </span>
                   {!alert.read && <span className="badge-dot" />}
                 </div>
                 <p className="text-sm font-semibold text-slate-900">{alert.title}</p>
                 <p className="text-xs text-slate-500">{alert.description}</p>
-                <p className="text-xs text-slate-400">{alert.timeAgo}</p>
+                <p className="text-xs text-slate-400">
+                  {alert.createdAt ? new Date(alert.createdAt).toLocaleString() : "Sem data"}
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 {alert.read ? (

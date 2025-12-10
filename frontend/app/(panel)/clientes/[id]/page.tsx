@@ -54,9 +54,9 @@ export default function ClientDetailPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold text-slate-900">{client.name}</h1>
-        <p className="text-sm text-slate-500">{client.segment}</p>
+        <p className="text-sm text-slate-500">CNPJ: {client.cnpj ?? "não informado"}</p>
         <div className="flex items-center gap-2 text-xs text-slate-500">
-          <MapPin className="h-4 w-4" /> {client.city}/{client.state}
+          <MapPin className="h-4 w-4" /> {client.city ?? "-"}/{client.state ?? "-"}
         </div>
       </div>
 
@@ -65,11 +65,11 @@ export default function ClientDetailPage() {
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold text-slate-900">Unidades</p>
             <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-              {client.units.length} ativos
+              {client.units?.length ?? 0} ativos
             </span>
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {client.units.map((unit) => (
+            {(client.units ?? []).map((unit) => (
               <Link
                 key={unit.id}
                 href={`/unidades/${unit.id}`}
@@ -78,13 +78,13 @@ export default function ClientDetailPage() {
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <p className="text-sm font-semibold text-slate-900">{unit.name}</p>
-                    <p className="text-xs text-slate-500">{unit.city}/{unit.state}</p>
+                    <p className="text-xs text-slate-500">{unit.city ?? "-"}/{unit.state ?? "-"}</p>
                   </div>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                    {unit.licenseCount} licenças
+                    {unit.licenseCount ?? 0} licenças
                   </span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">Última atualização {client.updatedAt}</p>
+                <p className="mt-2 text-xs text-slate-500">Última atualização {client.updatedAt ?? "-"}</p>
               </Link>
             ))}
           </div>
@@ -95,10 +95,10 @@ export default function ClientDetailPage() {
             <Building2 className="h-4 w-4 text-emerald-600" /> Contatos
           </div>
           <div className="mt-4 space-y-3">
-            {client.contacts.length === 0 ? (
+            {(client.contacts ?? []).length === 0 ? (
               <p className="text-sm text-slate-500">Nenhum contato cadastrado.</p>
             ) : (
-              client.contacts.map((contact) => (
+              (client.contacts ?? []).map((contact) => (
                 <div key={contact.email} className="rounded-xl border border-slate-100 bg-white p-4">
                   <p className="text-sm font-semibold text-slate-900">{contact.name}</p>
                   <p className="text-xs text-slate-500">{contact.role}</p>

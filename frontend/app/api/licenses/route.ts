@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
 
-import { listLicenses } from "@/lib/data/mock-api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "http://localhost:8080/api";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const status = searchParams.get("status") || undefined;
-  const search = searchParams.get("q") || undefined;
-  const unitId = searchParams.get("unitId") || undefined;
+  const params = new URLSearchParams();
+  const unitId = searchParams.get("unitId");
+  const clientId = searchParams.get("clientId");
+  if (unitId) params.append("unitId", unitId);
+  if (clientId) params.append("clientId", clientId);
 
-  const licenses = listLicenses({ status, search, unitId });
-  return NextResponse.json({ licenses });
+  const response = await fetch(`${API_BASE_URL}/licenses${params.toString() ? `?${params.toString()}` : ""}`);
+  const data = await response.json();
+  return NextResponse.json({ licenses: data ?? [] }, { status: response.status });
 }

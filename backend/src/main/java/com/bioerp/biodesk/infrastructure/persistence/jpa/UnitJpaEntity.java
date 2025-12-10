@@ -25,11 +25,26 @@ public class UnitJpaEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 14)
+    @Column(unique = true, length = 20)
     private String cnpj;
+
+    @Column(name = "address_line")
+    private String addressLine;
+
+    private String city;
+
+    private String state;
+
+    private String activity;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
 
     public UUID getId() {
         return id;
@@ -63,12 +78,60 @@ public class UnitJpaEntity {
         this.cnpj = cnpj;
     }
 
+    public String getAddressLine() {
+        return addressLine;
+    }
+
+    public void setAddressLine(String addressLine) {
+        this.addressLine = addressLine;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Unit toDomain() {
@@ -88,6 +151,7 @@ public class UnitJpaEntity {
         entity.setName(unit.getName());
         entity.setCnpj(unit.getCnpj());
         entity.setCreatedAt(unit.getCreatedAt());
+        entity.setUpdatedAt(unit.getCreatedAt());
         return entity;
     }
 }

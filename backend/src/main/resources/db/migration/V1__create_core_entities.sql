@@ -1,0 +1,44 @@
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255),
+    role VARCHAR(64) NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE clients (
+    id UUID PRIMARY KEY,
+    legal_name VARCHAR(255) NOT NULL,
+    trade_name VARCHAR(255),
+    name VARCHAR(255),
+    cnpj VARCHAR(20) NOT NULL UNIQUE,
+    segment VARCHAR(128),
+    status VARCHAR(64) NOT NULL DEFAULT 'active',
+    main_contact_name VARCHAR(255),
+    main_contact_email VARCHAR(255),
+    main_contact_phone VARCHAR(64),
+    notes TEXT,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE units (
+    id UUID PRIMARY KEY,
+    client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    cnpj VARCHAR(20),
+    address_line VARCHAR(255),
+    city VARCHAR(128),
+    state VARCHAR(64),
+    activity VARCHAR(255),
+    notes TEXT,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_units_client_id ON units(client_id);
+CREATE UNIQUE INDEX uq_units_cnpj ON units(cnpj) WHERE cnpj IS NOT NULL;
+

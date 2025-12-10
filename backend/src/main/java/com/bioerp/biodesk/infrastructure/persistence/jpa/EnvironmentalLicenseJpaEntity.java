@@ -30,10 +30,19 @@ public class EnvironmentalLicenseJpaEntity {
     @JoinColumn(name = "unit_id", nullable = false)
     private UnitJpaEntity unit;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "type", nullable = false)
+    private String type;
 
-    @Column(name = "issuing_authority", nullable = false)
+    @Column(name = "agency", nullable = false)
+    private String agency;
+
+    @Column(name = "process_number", nullable = false)
+    private String processNumber;
+
+    @Column(name = "license_number", nullable = false)
+    private String licenseNumber;
+
+    @Column(name = "issuing_authority")
     private String issuingAuthority;
 
     @Column(name = "issue_date", nullable = false)
@@ -42,10 +51,13 @@ public class EnvironmentalLicenseJpaEntity {
     @Column(name = "expiration_date", nullable = false)
     private LocalDate expirationDate;
 
-    @Column(name = "renewal_lead_time_days", nullable = false)
+    @Column(nullable = false)
+    private String status;
+
+    @Column(name = "renewal_lead_time_days")
     private int renewalLeadTimeDays;
 
-    @Column(name = "renewal_requested", nullable = false)
+    @Column(name = "renewal_requested")
     private boolean renewalRequested;
 
     @Column(name = "renewal_requested_at")
@@ -54,6 +66,18 @@ public class EnvironmentalLicenseJpaEntity {
     @Convert(converter = LicenseConditionsConverter.class)
     @Column(columnDefinition = "TEXT")
     private Set<LicenseCondition> conditions = new HashSet<>();
+
+    @Column(name = "tags", columnDefinition = "TEXT[]")
+    private String[] tags;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
+
+    @Column(name = "created_at", nullable = false)
+    private java.time.OffsetDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private java.time.OffsetDateTime updatedAt;
 
     public UUID getId() {
         return id;
@@ -79,12 +103,36 @@ public class EnvironmentalLicenseJpaEntity {
         this.unit = unit;
     }
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAgency() {
+        return agency;
+    }
+
+    public void setAgency(String agency) {
+        this.agency = agency;
+    }
+
+    public String getProcessNumber() {
+        return processNumber;
+    }
+
+    public void setProcessNumber(String processNumber) {
+        this.processNumber = processNumber;
+    }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
     }
 
     public String getIssuingAuthority() {
@@ -109,6 +157,14 @@ public class EnvironmentalLicenseJpaEntity {
 
     public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getRenewalLeadTimeDays() {
@@ -143,16 +199,48 @@ public class EnvironmentalLicenseJpaEntity {
         this.conditions = conditions;
     }
 
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public java.time.OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.time.OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public java.time.OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(java.time.OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public EnvironmentalLicense toDomain() {
         return EnvironmentalLicense.builder()
                 .id(id)
                 .clientId(client.getId())
                 .unitId(unit.getId())
-                .name(name)
-                .issuingAuthority(issuingAuthority)
+                .name(type)
+                .issuingAuthority(agency != null ? agency : issuingAuthority)
                 .issueDate(issueDate)
                 .expirationDate(expirationDate)
-                .renewalLeadTimeDays(renewalLeadTimeDays)
+                .renewalLeadTimeDays(renewalLeadTimeDays > 0 ? renewalLeadTimeDays : 1)
                 .renewalRequested(renewalRequested)
                 .renewalRequestedAt(renewalRequestedAt)
                 .conditions(conditions)
@@ -164,14 +252,20 @@ public class EnvironmentalLicenseJpaEntity {
         entity.setId(license.getId());
         entity.setClient(unitEntity.getClient());
         entity.setUnit(unitEntity);
-        entity.setName(license.getName());
+        entity.setType(license.getName());
+        entity.setAgency(license.getIssuingAuthority());
+        entity.setProcessNumber("PENDING");
+        entity.setLicenseNumber("PENDING");
         entity.setIssuingAuthority(license.getIssuingAuthority());
         entity.setIssueDate(license.getIssueDate());
         entity.setExpirationDate(license.getExpirationDate());
+        entity.setStatus("active");
         entity.setRenewalLeadTimeDays(license.getRenewalLeadTimeDays());
         entity.setRenewalRequested(license.isRenewalRequested());
         entity.setRenewalRequestedAt(license.getRenewalRequestedAt());
         entity.setConditions(new HashSet<>(license.getConditions()));
+        entity.setCreatedAt(java.time.OffsetDateTime.now());
+        entity.setUpdatedAt(entity.getCreatedAt());
         return entity;
     }
 }

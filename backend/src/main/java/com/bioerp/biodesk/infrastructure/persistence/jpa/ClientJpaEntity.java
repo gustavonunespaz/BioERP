@@ -15,14 +15,38 @@ public class ClientJpaEntity {
     @Id
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "legal_name", nullable = false)
+    private String legalName;
 
-    @Column(nullable = false, unique = true, length = 14)
+    @Column(name = "trade_name")
+    private String tradeName;
+
+    @Column(nullable = false, unique = true, length = 20)
     private String cnpj;
+
+    @Column
+    private String segment;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column(name = "main_contact_name")
+    private String mainContactName;
+
+    @Column(name = "main_contact_email")
+    private String mainContactEmail;
+
+    @Column(name = "main_contact_phone")
+    private String mainContactPhone;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
 
     public UUID getId() {
         return id;
@@ -32,12 +56,20 @@ public class ClientJpaEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLegalName() {
+        return legalName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLegalName(String legalName) {
+        this.legalName = legalName;
+    }
+
+    public String getTradeName() {
+        return tradeName;
+    }
+
+    public void setTradeName(String tradeName) {
+        this.tradeName = tradeName;
     }
 
     public String getCnpj() {
@@ -48,6 +80,54 @@ public class ClientJpaEntity {
         this.cnpj = cnpj;
     }
 
+    public String getSegment() {
+        return segment;
+    }
+
+    public void setSegment(String segment) {
+        this.segment = segment;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getMainContactName() {
+        return mainContactName;
+    }
+
+    public void setMainContactName(String mainContactName) {
+        this.mainContactName = mainContactName;
+    }
+
+    public String getMainContactEmail() {
+        return mainContactEmail;
+    }
+
+    public void setMainContactEmail(String mainContactEmail) {
+        this.mainContactEmail = mainContactEmail;
+    }
+
+    public String getMainContactPhone() {
+        return mainContactPhone;
+    }
+
+    public void setMainContactPhone(String mainContactPhone) {
+        this.mainContactPhone = mainContactPhone;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
@@ -56,10 +136,18 @@ public class ClientJpaEntity {
         this.createdAt = createdAt;
     }
 
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public Client toDomain() {
         return Client.builder()
                 .id(id)
-                .name(name)
+                .name(legalName)
                 .cnpj(cnpj)
                 .createdAt(createdAt)
                 .build();
@@ -68,9 +156,12 @@ public class ClientJpaEntity {
     public static ClientJpaEntity fromDomain(Client client) {
         ClientJpaEntity entity = new ClientJpaEntity();
         entity.setId(client.getId());
-        entity.setName(client.getName());
+        entity.setLegalName(client.getName());
+        entity.setTradeName(client.getName());
         entity.setCnpj(client.getCnpj());
+        entity.setStatus("active");
         entity.setCreatedAt(client.getCreatedAt());
+        entity.setUpdatedAt(client.getCreatedAt());
         return entity;
     }
 }

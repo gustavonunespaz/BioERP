@@ -1,22 +1,17 @@
 CREATE TABLE alerts (
     id UUID PRIMARY KEY,
-    client_id UUID REFERENCES clients(id) ON DELETE SET NULL,
-    unit_id UUID REFERENCES units(id) ON DELETE SET NULL,
+    client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+    unit_id UUID NOT NULL REFERENCES units(id) ON DELETE CASCADE,
     license_id UUID NOT NULL REFERENCES environmental_licenses(id) ON DELETE CASCADE,
-    condition_id UUID REFERENCES license_conditions(id) ON DELETE SET NULL,
     alert_type VARCHAR(128) NOT NULL,
-    severity VARCHAR(32) NOT NULL,
-    trigger_date DATE NOT NULL,
-    due_date DATE,
-    message TEXT,
-    channel VARCHAR(64),
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
     dedup_key VARCHAR(255) NOT NULL UNIQUE,
     is_read BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_alerts_due_date ON alerts(due_date);
-CREATE INDEX idx_alerts_severity_read ON alerts(severity, is_read);
+CREATE INDEX idx_alerts_read_status ON alerts(is_read);
 
 CREATE TABLE audit_logs (
     id UUID PRIMARY KEY,

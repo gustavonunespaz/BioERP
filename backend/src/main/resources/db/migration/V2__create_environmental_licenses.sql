@@ -8,11 +8,11 @@ CREATE TABLE environmental_licenses (
     issuing_authority VARCHAR(255),
     process_number VARCHAR(128) NOT NULL,
     license_number VARCHAR(128) NOT NULL,
-    issued_at DATE NOT NULL,
-    valid_until DATE NOT NULL,
+    issue_date DATE NOT NULL,
+    expiration_date DATE NOT NULL,
     status VARCHAR(64) NOT NULL,
     responsible_user_id UUID REFERENCES users(id),
-    tags TEXT[],
+    tags TEXT ARRAY,
     notes TEXT,
     renewal_lead_time_days INTEGER DEFAULT 0,
     renewal_requested BOOLEAN DEFAULT FALSE,
@@ -23,7 +23,7 @@ CREATE TABLE environmental_licenses (
 );
 
 CREATE INDEX idx_environmental_licenses_unit_id ON environmental_licenses(unit_id);
-CREATE INDEX idx_environmental_licenses_valid_until ON environmental_licenses(valid_until);
+CREATE INDEX idx_environmental_licenses_expiration_date ON environmental_licenses(expiration_date);
 
 CREATE TABLE license_documents (
     id UUID PRIMARY KEY,
@@ -49,9 +49,6 @@ CREATE TABLE license_document_versions (
     file_data BYTEA,
     CONSTRAINT uq_document_version UNIQUE (document_id, version_number)
 );
-
-CREATE UNIQUE INDEX uq_active_document_version ON license_document_versions(document_id)
-    WHERE is_active = TRUE;
 
 CREATE TABLE license_conditions (
     id UUID PRIMARY KEY,

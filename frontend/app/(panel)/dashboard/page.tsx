@@ -21,38 +21,70 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-12">
-        {metrics.map((metric) => (
-          <div key={metric.title} className="xl:col-span-3">
-            <MetricCard {...metric} />
+        {metrics.length === 0 ? (
+          <div className="xl:col-span-12">
+            <div className="rounded-xl border border-slate-100 bg-white p-6 text-center text-sm text-slate-600">
+              Nenhum KPI configurado ainda. Cadastre dados reais para visualizar os painéis.
+            </div>
           </div>
-        ))}
+        ) : (
+          metrics.map((metric) => (
+            <div key={metric.title} className="xl:col-span-3">
+              <MetricCard {...metric} />
+            </div>
+          ))
+        )}
       </section>
 
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-12">
         <div className="xl:col-span-5">
-          <RiskBeacon panel={riskPanel} />
+          {riskPanel.buckets.length === 0 ? (
+            <div className="rounded-xl border border-slate-100 bg-white p-6 text-sm text-slate-600">Painel de risco vazio.</div>
+          ) : (
+            <RiskBeacon panel={riskPanel} />
+          )}
         </div>
         <div className="xl:col-span-7">
-          <ScheduleBoard boards={agendaBoard} />
+          {agendaBoard.length === 0 ? (
+            <div className="rounded-xl border border-slate-100 bg-white p-6 text-sm text-slate-600">Agenda sem itens.</div>
+          ) : (
+            <ScheduleBoard boards={agendaBoard} />
+          )}
         </div>
       </section>
 
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-12">
         <div className="xl:col-span-7">
-          <ProjectTable projects={projectRows} />
+          {projectRows.length === 0 ? (
+            <div className="rounded-xl border border-slate-100 bg-white p-6 text-sm text-slate-600">Nenhum projeto disponível.</div>
+          ) : (
+            <ProjectTable projects={projectRows} />
+          )}
         </div>
         <div className="xl:col-span-5">
-          <FinanceSummary bars={financeBars} breakdown={serviceBreakdown} />
+          {financeBars.length === 0 ? (
+            <div className="rounded-xl border border-slate-100 bg-white p-6 text-sm text-slate-600">Fluxo financeiro aguardando dados.</div>
+          ) : (
+            <FinanceSummary bars={financeBars} breakdown={serviceBreakdown} />
+          )}
         </div>
       </section>
 
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-12">
         <div className="xl:col-span-7">
-          <DocumentFeed documents={documents} />
+          {documents.length === 0 ? (
+            <div className="rounded-xl border border-slate-100 bg-white p-6 text-sm text-slate-600">Sem documentos recentes.</div>
+          ) : (
+            <DocumentFeed documents={documents} />
+          )}
         </div>
         <div className="xl:col-span-5 space-y-4">
           <CashflowPanel />
-          <ActivityFeed activities={activities} />
+          {activities.length === 0 ? (
+            <div className="rounded-xl border border-slate-100 bg-white p-4 text-sm text-slate-600">Nenhuma atividade registrada.</div>
+          ) : (
+            <ActivityFeed activities={activities} />
+          )}
         </div>
       </section>
     </div>

@@ -40,5 +40,5 @@ CREATE TABLE units (
 );
 
 CREATE INDEX idx_units_client_id ON units(client_id);
-CREATE UNIQUE INDEX uq_units_cnpj ON units(cnpj) WHERE cnpj IS NOT NULL;
+CREATE UNIQUE INDEX uq_units_cnpj ON units(cnpj);
 

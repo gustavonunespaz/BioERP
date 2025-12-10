@@ -35,10 +35,23 @@ public class CreateUnitUseCase {
                 .clientId(client.getId())
                 .name(command.name())
                 .cnpj(normalizedCnpj)
+                .addressLine(command.addressLine())
+                .city(command.city())
+                .state(command.state())
+                .activity(command.activity())
+                .notes(command.notes())
                 .build();
         return unitRepository.save(unit);
     }
 
-    public record Command(UUID id, UUID clientId, String name, String cnpj) {
+    public record Command(UUID id,
+                          UUID clientId,
+                          String name,
+                          String cnpj,
+                          String addressLine,
+                          String city,
+                          String state,
+                          String activity,
+                          String notes) {
     }
 }

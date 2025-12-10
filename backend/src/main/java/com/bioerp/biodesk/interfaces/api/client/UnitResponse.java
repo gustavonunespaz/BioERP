@@ -9,9 +9,27 @@ public record UnitResponse(
         UUID clientId,
         String name,
         String cnpj,
-        OffsetDateTime createdAt
+        String addressLine,
+        String city,
+        String state,
+        String activity,
+        String notes,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt
 ) {
     public static UnitResponse from(Unit unit) {
-        return new UnitResponse(unit.getId(), unit.getClientId(), unit.getName(), unit.getCnpj(), unit.getCreatedAt());
+        return new UnitResponse(
+                unit.getId(),
+                unit.getClientId(),
+                unit.getName(),
+                unit.getCnpj(),
+                unit.getAddressLine(),
+                unit.getCity(),
+                unit.getState(),
+                unit.getActivity(),
+                unit.getNotes(),
+                unit.getCreatedAt(),
+                unit.getUpdatedAt()
+        );
     }
 }

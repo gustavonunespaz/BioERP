@@ -39,7 +39,17 @@ class AlertControllerIntegrationTest {
 
     @Test
     void shouldListAlertsAndMarkThemAsRead() throws Exception {
-        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest("Alert Corp", "11.222.333/0001-81"));
+        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest(
+                "Alert Corp",
+                "Alert Corp",
+                "11.222.333/0001-81",
+                "Energia",
+                "active",
+                "Maria Gestora",
+                "gestora@alert.com",
+                "11911110000",
+                "Cliente para testes de alertas"
+        ));
 
         MvcResult clientResult = mockMvc.perform(post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -49,7 +59,15 @@ class AlertControllerIntegrationTest {
 
         String clientId = objectMapper.readTree(clientResult.getResponse().getContentAsString()).get("id").asText();
 
-        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest("Unidade Centro", "19131243000197"));
+        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest(
+                "Unidade Centro",
+                "19131243000197",
+                "Rua Alfa, 50",
+                "São Paulo",
+                "SP",
+                "Operação teste",
+                ""
+        ));
 
         MvcResult unitResult = mockMvc.perform(post("/api/clients/" + clientId + "/units")
                         .contentType(MediaType.APPLICATION_JSON)

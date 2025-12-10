@@ -47,7 +47,18 @@ public class ClientController {
 
     @PostMapping("/clients")
     public ResponseEntity<ClientResponse> createClient(@Valid @RequestBody CreateClientRequest request) {
-        Client created = createClientUseCase.handle(new CreateClientUseCase.Command(null, request.name(), request.cnpj()));
+        Client created = createClientUseCase.handle(new CreateClientUseCase.Command(
+                null,
+                request.name(),
+                request.tradeName(),
+                request.cnpj(),
+                request.segment(),
+                request.status(),
+                request.mainContactName(),
+                request.mainContactEmail(),
+                request.mainContactPhone(),
+                request.notes()
+        ));
         ClientResponse response = ClientResponse.from(created);
         return ResponseEntity.created(URI.create("/api/clients/" + response.id())).body(response);
     }
@@ -70,7 +81,17 @@ public class ClientController {
 
     @PostMapping("/clients/{clientId}/units")
     public ResponseEntity<UnitResponse> createUnit(@PathVariable UUID clientId, @Valid @RequestBody CreateUnitRequest request) {
-        Unit created = createUnitUseCase.handle(new CreateUnitUseCase.Command(null, clientId, request.name(), request.cnpj()));
+        Unit created = createUnitUseCase.handle(new CreateUnitUseCase.Command(
+                null,
+                clientId,
+                request.name(),
+                request.cnpj(),
+                request.addressLine(),
+                request.city(),
+                request.state(),
+                request.activity(),
+                request.notes()
+        ));
         UnitResponse response = UnitResponse.from(created);
         return ResponseEntity.created(URI.create("/api/units/" + response.id())).body(response);
     }

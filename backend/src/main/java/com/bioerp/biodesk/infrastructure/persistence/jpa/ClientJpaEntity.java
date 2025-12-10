@@ -148,8 +148,16 @@ public class ClientJpaEntity {
         return Client.builder()
                 .id(id)
                 .name(legalName)
+                .tradeName(tradeName)
                 .cnpj(cnpj)
+                .segment(segment)
+                .status(status)
+                .mainContactName(mainContactName)
+                .mainContactEmail(mainContactEmail)
+                .mainContactPhone(mainContactPhone)
+                .notes(notes)
                 .createdAt(createdAt)
+                .updatedAt(updatedAt)
                 .build();
     }
 
@@ -157,11 +165,16 @@ public class ClientJpaEntity {
         ClientJpaEntity entity = new ClientJpaEntity();
         entity.setId(client.getId());
         entity.setLegalName(client.getName());
-        entity.setTradeName(client.getName());
+        entity.setTradeName(client.getTradeName());
         entity.setCnpj(client.getCnpj());
-        entity.setStatus("active");
+        entity.setSegment(client.getSegment());
+        entity.setStatus(client.getStatus());
+        entity.setMainContactName(client.getMainContactName());
+        entity.setMainContactEmail(client.getMainContactEmail());
+        entity.setMainContactPhone(client.getMainContactPhone());
+        entity.setNotes(client.getNotes());
         entity.setCreatedAt(client.getCreatedAt());
-        entity.setUpdatedAt(client.getCreatedAt());
+        entity.setUpdatedAt(client.getUpdatedAt());
         return entity;
     }
 }

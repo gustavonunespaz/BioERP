@@ -17,24 +17,68 @@ export async function fetchClients(): Promise<Client[]> {
     ? data.map((item: any) => ({
         id: item.id,
         name: item.name,
+        tradeName: item.tradeName,
         cnpj: item.cnpj,
-        createdAt: item.createdAt
+        segment: item.segment,
+        status: mapStatus(item.status),
+        mainContactName: item.mainContactName,
+        mainContactEmail: item.mainContactEmail,
+        mainContactPhone: item.mainContactPhone,
+        notes: item.notes,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt
       }))
     : [];
 }
 
-export async function createClientRequest(payload: { name: string; cnpj: string }): Promise<Client> {
+export async function createClientRequest(payload: {
+  name: string;
+  tradeName?: string;
+  cnpj: string;
+  segment?: string;
+  status?: string;
+  mainContactName?: string;
+  mainContactEmail?: string;
+  mainContactPhone?: string;
+  notes?: string;
+}): Promise<Client> {
   const data = await apiFetch("/clients", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
-  return { id: data.id, name: data.name, cnpj: data.cnpj, createdAt: data.createdAt };
+  return {
+    id: data.id,
+    name: data.name,
+    tradeName: data.tradeName,
+    cnpj: data.cnpj,
+    segment: data.segment,
+    status: mapStatus(data.status),
+    mainContactName: data.mainContactName,
+    mainContactEmail: data.mainContactEmail,
+    mainContactPhone: data.mainContactPhone,
+    notes: data.notes,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt
+  };
 }
 
 export async function fetchClientById(id: string): Promise<Client> {
   const data = await apiFetch(`/clients/${id}`, { cache: "no-store" });
-  return { id: data.id, name: data.name, cnpj: data.cnpj, createdAt: data.createdAt };
+  return {
+    id: data.id,
+    name: data.name,
+    tradeName: data.tradeName,
+    cnpj: data.cnpj,
+    segment: data.segment,
+    status: mapStatus(data.status),
+    mainContactName: data.mainContactName,
+    mainContactEmail: data.mainContactEmail,
+    mainContactPhone: data.mainContactPhone,
+    notes: data.notes,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt
+  };
 }
 
 export async function fetchUnitById(id: string): Promise<UnitDetail> {
@@ -43,8 +87,14 @@ export async function fetchUnitById(id: string): Promise<UnitDetail> {
     id: data.id,
     name: data.name,
     clientId: data.clientId,
+    addressLine: data.addressLine,
     cnpj: data.cnpj,
-    createdAt: data.createdAt
+    city: data.city,
+    state: data.state,
+    activity: data.activity,
+    notes: data.notes,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt
   };
 }
 
@@ -129,4 +179,13 @@ export async function markAlertRead(id: string): Promise<Alert> {
     createdAt: data.createdAt,
     category: data.type
   };
+}
+
+function mapStatus(status?: string) {
+  if (!status) return undefined;
+  const normalized = status.toLowerCase();
+  if (normalized === "active") return "ativo";
+  if (normalized === "risk") return "risco";
+  if (normalized === "inactive") return "inativo";
+  return status as Client["status"];
 }

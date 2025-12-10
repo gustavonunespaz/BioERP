@@ -16,9 +16,13 @@ export type UnitSummary = {
 export type Client = {
   id: string;
   name: string;
+  tradeName?: string;
   cnpj?: string;
   segment?: string;
   status?: "ativo" | "risco" | "inativo";
+  mainContactName?: string;
+  mainContactEmail?: string;
+  mainContactPhone?: string;
   city?: string;
   state?: string;
   contacts?: Contact[];
@@ -63,11 +67,15 @@ export type UnitDetail = {
   id: string;
   name: string;
   clientId: string;
+  addressLine?: string;
   city?: string;
   state?: string;
   manager?: string;
+  activity?: string;
+  notes?: string;
   cnpj?: string;
   createdAt?: string;
+  updatedAt?: string;
   licenses?: License[];
 };
 

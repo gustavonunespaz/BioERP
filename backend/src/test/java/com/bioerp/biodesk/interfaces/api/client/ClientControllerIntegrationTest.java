@@ -29,7 +29,17 @@ class ClientControllerIntegrationTest {
 
     @Test
     void shouldCreateClientAndUnitAndFetchThem() throws Exception {
-        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest("Bio Corp", "04.252.011/0001-10"));
+        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest(
+                "Bio Corp",
+                "Bio Corp",
+                "04.252.011/0001-10",
+                "Energia",
+                "active",
+                "João Gestor",
+                "joao@bioerp.com",
+                "11922223333",
+                "Cliente de integração"
+        ));
 
         MvcResult clientResult = mockMvc.perform(post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -41,7 +51,15 @@ class ClientControllerIntegrationTest {
         String clientId = clientNode.get("id").asText();
         assertThat(clientNode.get("cnpj").asText()).isEqualTo("04252011000110");
 
-        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest("Filial Norte", "27865757000102"));
+        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest(
+                "Filial Norte",
+                "27865757000102",
+                "Avenida Central, 123",
+                "São Paulo",
+                "SP",
+                "Operação integrada",
+                ""
+        ));
 
         MvcResult unitResult = mockMvc.perform(post("/api/clients/" + clientId + "/units")
                         .contentType(MediaType.APPLICATION_JSON)

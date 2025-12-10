@@ -41,6 +41,10 @@ npm run dev
 - Defina `NEXT_PUBLIC_API_BASE_URL` (ou `API_BASE_URL`) para apontar para a instância do backend, ex.: `http://localhost:8080/api`.
 - A UI mostra listas vazias até que você cadastre dados reais via formulários ou chamadas diretas à API.
 
+### Acesso ao banco de dados
+- **Ambiente local (H2 em memória):** após subir o backend, abra `http://localhost:8080/h2-console` e use as credenciais `jdbc:h2:mem:bioerp` / usuário `sa` / senha `sa`. O modo `PostgreSQL` está habilitado para manter compatibilidade de tipos.
+- **PostgreSQL (perfil `prod`):** conecte usando os valores de `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`. As mesmas migrações Flyway são aplicadas para garantir o schema.
+
 ## Testes
 - Backend: `cd backend && mvn test`
 - Frontend: `cd frontend && npm run build`

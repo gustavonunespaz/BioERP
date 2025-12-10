@@ -140,7 +140,13 @@ public class UnitJpaEntity {
                 .clientId(client.getId())
                 .name(name)
                 .cnpj(cnpj)
+                .addressLine(addressLine)
+                .city(city)
+                .state(state)
+                .activity(activity)
+                .notes(notes)
                 .createdAt(createdAt)
+                .updatedAt(updatedAt)
                 .build();
     }
 
@@ -150,8 +156,13 @@ public class UnitJpaEntity {
         entity.setClient(clientEntity);
         entity.setName(unit.getName());
         entity.setCnpj(unit.getCnpj());
+        entity.setAddressLine(unit.getAddressLine());
+        entity.setCity(unit.getCity());
+        entity.setState(unit.getState());
+        entity.setActivity(unit.getActivity());
+        entity.setNotes(unit.getNotes());
         entity.setCreatedAt(unit.getCreatedAt());
-        entity.setUpdatedAt(unit.getCreatedAt());
+        entity.setUpdatedAt(unit.getUpdatedAt());
         return entity;
     }
 }

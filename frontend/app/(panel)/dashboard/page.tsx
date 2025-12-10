@@ -1,5 +1,4 @@
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
-import { CashflowPanel } from "@/components/dashboard/cashflow-panel";
 import { DocumentFeed } from "@/components/dashboard/document-feed";
 import { FinanceSummary } from "@/components/dashboard/finance-summary";
 import { MetricCard } from "@/components/dashboard/metric-card";
@@ -78,8 +77,7 @@ export default function DashboardPage() {
             <DocumentFeed documents={documents} />
           )}
         </div>
-        <div className="xl:col-span-5 space-y-4">
-          <CashflowPanel />
+        <div className="xl:col-span-5">
           {activities.length === 0 ? (
             <div className="rounded-xl border border-slate-100 bg-white p-4 text-sm text-slate-600">Nenhuma atividade registrada.</div>
           ) : (

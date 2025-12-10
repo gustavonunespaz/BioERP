@@ -37,7 +37,17 @@ class LicenseControllerIntegrationTest {
 
     @Test
     void shouldCreateLicenseListItAndExposeCalculatedStatus() throws Exception {
-        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest("Licenses Corp", "40.688.134/0001-61"));
+        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest(
+                "Licenses Corp",
+                "Licenses Corp",
+                "40.688.134/0001-61",
+                "Energia",
+                "active",
+                "Marcos Silva",
+                "marcos@licenses.com",
+                "11988887777",
+                "Cliente para testar licenças"
+        ));
 
         MvcResult clientResult = mockMvc.perform(post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -48,7 +58,15 @@ class LicenseControllerIntegrationTest {
         JsonNode clientNode = objectMapper.readTree(clientResult.getResponse().getContentAsString());
         String clientId = clientNode.get("id").asText();
 
-        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest("Unidade Central", "40436654535889"));
+        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest(
+                "Unidade Central",
+                "40436654535889",
+                "Rua Azul, 99",
+                "São Paulo",
+                "SP",
+                "Operação principal",
+                ""
+        ));
 
         MvcResult unitResult = mockMvc.perform(post("/api/clients/" + clientId + "/units")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +128,17 @@ class LicenseControllerIntegrationTest {
 
     @Test
     void shouldAddConditionAndUpdateStatus() throws Exception {
-        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest("Cond Corp", "27.865.757/0001-02"));
+        String clientPayload = objectMapper.writeValueAsString(new CreateClientRequest(
+                "Cond Corp",
+                "Cond Corp",
+                "27.865.757/0001-02",
+                "Energia",
+                "active",
+                "Ana Lima",
+                "ana@cond.com",
+                "11933334444",
+                "Cliente para condicoes"
+        ));
         JsonNode clientNode = objectMapper.readTree(mockMvc.perform(post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clientPayload))
@@ -119,7 +147,15 @@ class LicenseControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString());
 
-        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest("Unidade Cond", "54.550.752/0001-55"));
+        String unitPayload = objectMapper.writeValueAsString(new CreateUnitRequest(
+                "Unidade Cond",
+                "54.550.752/0001-55",
+                "Rua Beta, 10",
+                "São Paulo",
+                "SP",
+                "Operação cond",
+                ""
+        ));
         JsonNode unitNode = objectMapper.readTree(mockMvc.perform(post("/api/clients/" + clientNode.get("id").asText() + "/units")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(unitPayload))

@@ -23,11 +23,7 @@ class CreateClientUseCaseTest {
 
     @Test
     void shouldCreateClientWithValidCnpj() {
-        CreateClientUseCase.Command command = new CreateClientUseCase.Command(
-                UUID.fromString("00000000-0000-0000-0000-000000000111"),
-                "Bio Corp",
-                "11222333000181"
-        );
+        CreateClientUseCase.Command command = defaultCommand("Bio Corp", "11222333000181");
 
         Client created = useCase.handle(command);
 
@@ -38,17 +34,32 @@ class CreateClientUseCaseTest {
 
     @Test
     void shouldNotAllowDuplicatedCnpj() {
-        useCase.handle(new CreateClientUseCase.Command(null, "Bio Corp", "04252011000110"));
+        useCase.handle(defaultCommand("Bio Corp", "04252011000110"));
 
         assertThrows(ResourceConflictException.class, () ->
-                useCase.handle(new CreateClientUseCase.Command(null, "Other", "04252011000110"))
+                useCase.handle(defaultCommand("Other", "04252011000110"))
         );
     }
 
     @Test
     void shouldValidateCnpj() {
-        CreateClientUseCase.Command command = new CreateClientUseCase.Command(null, "Bio Corp", "123");
+        CreateClientUseCase.Command command = defaultCommand("Bio Corp", "123");
 
         assertThrows(IllegalArgumentException.class, () -> useCase.handle(command));
+    }
+
+    private CreateClientUseCase.Command defaultCommand(String name, String cnpj) {
+        return new CreateClientUseCase.Command(
+                UUID.fromString("00000000-0000-0000-0000-000000000111"),
+                name,
+                name,
+                cnpj,
+                "Energia",
+                "active",
+                "Contato Padrão",
+                "contato@bioerp.com",
+                "11999990000",
+                "Cliente criado para testes"
+        );
     }
 }

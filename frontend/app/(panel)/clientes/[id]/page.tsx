@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertCircle, Building2, Loader2, MapPin, Phone } from "lucide-react";
+import { AlertCircle, Building2, Loader2, Phone } from "lucide-react";
 import { useParams } from "next/navigation";
 
 import { Card } from "@/components/ui/card";
@@ -54,9 +54,21 @@ export default function ClientDetailPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold text-slate-900">{client.name}</h1>
-        <p className="text-sm text-slate-500">CNPJ: {client.cnpj ?? "não informado"}</p>
-        <div className="flex items-center gap-2 text-xs text-slate-500">
-          <MapPin className="h-4 w-4" /> {client.city ?? "-"}/{client.state ?? "-"}
+        <p className="text-sm text-slate-500">Nome fantasia: {client.tradeName || "não informado"}</p>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+          <span className="rounded-full bg-slate-100 px-3 py-1 font-semibold text-slate-700">CNPJ: {client.cnpj ?? "não informado"}</span>
+          <span className="rounded-full bg-slate-100 px-3 py-1 font-semibold text-slate-700">Segmento: {client.segment || "não informado"}</span>
+          <span
+            className={`rounded-full px-3 py-1 font-semibold ${
+              client.status === "ativo"
+                ? "bg-emerald-50 text-emerald-700"
+                : client.status === "risco"
+                  ? "bg-amber-50 text-amber-700"
+                  : "bg-slate-100 text-slate-700"
+            }`}
+          >
+            Status: {client.status ?? "Sem status"}
+          </span>
         </div>
       </div>
 
@@ -92,22 +104,23 @@ export default function ClientDetailPage() {
 
         <Card className="p-4 lg:p-6">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <Building2 className="h-4 w-4 text-emerald-600" /> Contatos
+            <Building2 className="h-4 w-4 text-emerald-600" /> Contato principal
           </div>
           <div className="mt-4 space-y-3">
-            {(client.contacts ?? []).length === 0 ? (
-              <p className="text-sm text-slate-500">Nenhum contato cadastrado.</p>
+            <div className="rounded-xl border border-slate-100 bg-white p-4">
+              <p className="text-sm font-semibold text-slate-900">{client.mainContactName ?? "Não informado"}</p>
+              <p className="text-xs text-slate-500">{client.mainContactEmail ?? "Sem e-mail"}</p>
+              <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                <Phone className="h-4 w-4" /> {client.mainContactPhone ?? "Sem telefone"}
+              </div>
+            </div>
+            {(client.notes || "").trim().length > 0 ? (
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4 text-sm text-emerald-900">
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">Observações</p>
+                <p className="mt-1 leading-relaxed">{client.notes}</p>
+              </div>
             ) : (
-              (client.contacts ?? []).map((contact) => (
-                <div key={contact.email} className="rounded-xl border border-slate-100 bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-900">{contact.name}</p>
-                  <p className="text-xs text-slate-500">{contact.role}</p>
-                  <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
-                    <Phone className="h-4 w-4" /> {contact.phone}
-                  </div>
-                  <p className="text-xs text-emerald-700">{contact.email}</p>
-                </div>
-              ))
+              <p className="text-sm text-slate-500">Nenhuma observação registrada.</p>
             )}
           </div>
         </Card>

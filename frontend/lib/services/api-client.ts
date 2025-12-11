@@ -1,9 +1,29 @@
 import { Alert, Client, License, LicenseCondition, UnitDetail } from "../types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "http://localhost:8080/api";
+const FALLBACK_API = "http://localhost:8080/api";
 
-async function apiFetch(path: string, options?: RequestInit) {
-  const response = await fetch(`${API_BASE_URL}${path}`, options);
+export function getApiBaseUrl() {
+  const configured = process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL;
+  if (!configured) {
+    throw new Error(
+      "NEXT_PUBLIC_API_BASE_URL não está configurada. Defina a variável para apontar para o backend (ex.: http://localhost:8080/api)."
+    );
+  }
+  return configured || FALLBACK_API;
+}
+
+export async function apiFetch(path: string, options?: RequestInit) {
+  const baseUrl = getApiBaseUrl();
+  let response: Response;
+
+  try {
+    response = await fetch(`${baseUrl}${path}`, options);
+  } catch (error) {
+    throw new Error(
+      "Não foi possível acessar a API. Confirme se o backend está rodando e se NEXT_PUBLIC_API_BASE_URL aponta para ele."
+    );
+  }
+
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
     throw new Error(error.error ?? "Erro ao comunicar com o serviço");

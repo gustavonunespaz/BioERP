@@ -2,11 +2,12 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Bell, Leaf, Plus, Search } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Bell, Leaf, LogOut, Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { navigationItems } from "@/lib/navigation";
+import { clearSession, loadUser } from "@/lib/auth/session";
 
 function getPageTitle(pathname: string) {
   if (pathname === "/") return "Dashboard";
@@ -17,7 +18,14 @@ function getPageTitle(pathname: string) {
 
 export function TopBar() {
   const pathname = usePathname();
+  const router = useRouter();
   const title = useMemo(() => getPageTitle(pathname), [pathname]);
+  const user = loadUser();
+
+  function handleLogout() {
+    clearSession();
+    router.push("/login");
+  }
 
   return (
     <header className="glass-panel sticky top-0 z-30 flex flex-col gap-4 rounded-[22px] px-4 py-4 shadow-soft lg:px-6">
@@ -60,6 +68,16 @@ export function TopBar() {
         <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500">
           <Bell className="h-5 w-5" />
         </span>
+        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+          <div className="flex flex-col leading-tight">
+            <span className="font-semibold">{user?.name ?? "Usuário"}</span>
+            <span className="text-xs text-slate-500">{user?.email ?? "autenticado"}</span>
+          </div>
+          <Button size="sm" variant="outline" className="gap-1" onClick={handleLogout}>
+            <LogOut className="h-4 w-4" />
+            Sair
+          </Button>
+        </div>
       </div>
     </header>
   );
